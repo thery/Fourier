@@ -1,0 +1,6 @@
+-R . Fourier
+FourierAbsTerm.v
+FourierConcTerm.v
+Fourier.v
+QFourier.v
+Examples.v
