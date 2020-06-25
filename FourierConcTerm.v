@@ -23,6 +23,7 @@ Section Init.
 Variable FT : Fmodule.
 
 (* Unusal notation *)
+Declare Scope F_scope.
 Notation "x + y" := (plusT FT x y) : F_scope.
 Notation "x - y" := (minusT FT x y) : F_scope.
 Notation "x * y" := (scalT FT x y) : F_scope.
@@ -108,7 +109,7 @@ Qed.
 Lemma scalT_inj0: forall z, z * 0%Z = 0%Z.
 Proof.
 assert (Hp: forall p, (Zpos p) * 0 = 0).
-intros p; induction p as [p Hrec | p Hrec | p].
+intros p; induction p as [p Hrec | p Hrec |].
 rewrite Zpos_xI; rewrite Zmult_comm; 
   rewrite <- Zplus_diag_eq_mult_2.
 repeat rewrite scalT_plus_l; rewrite Hrec.
@@ -158,8 +159,8 @@ repeat rewrite plusT_A; apply f_equal2 with (f := plusT FT); auto.
 rewrite plusT_C.
 repeat rewrite plusT_A; apply f_equal2 with (f := plusT FT); auto.
 repeat rewrite scalT_1; auto.
-intros z; destruct z as [p | p |]; intros t1 t2; auto.
-repeat rewrite scalT_0; rewrite injT_0_r; auto.
+intros z; destruct z as [|p | p]; intros t1 t2; auto.
+  repeat rewrite scalT_0; rewrite injT_0_r; auto.
 change (Zneg p) with ((-1) * (Zpos p))%Z.
 repeat rewrite scalT_mul; rewrite Hp; rewrite Hp0; auto.
 Qed.
@@ -167,7 +168,7 @@ Qed.
 Lemma injT_mul: forall z1 z2, (z1 * z2)%Z = z1 * z2 :> T _.
 Proof.
 assert (Hp: forall p z2, (Zpos p * z2)%Z = (Zpos p) * z2 :> T _).
-intros p; induction p as [p Hrec | p Hrec | p]; intros z2.
+intros p; induction p as [p Hrec | p Hrec|]; intros z2.
 rewrite Zpos_xI.
 replace ((2 * Zpos p + 1) * z2)%Z with (Zpos p * (2 * z2) + z2)%Z;
   try ring.
@@ -183,7 +184,7 @@ replace (2 * z2)%Z with (z2 + z2)%Z; try ring.
 change 2%Z with (1 + 1)%Z.
 rewrite scalT_plus_l; rewrite injT_plus; rewrite scalT_1; auto.
 rewrite scalT_1; rewrite Zmult_1_l; auto.
-intros z1 z2; destruct z1 as [p | p|]; auto.
+intros z1 z2; destruct z1 as [| p | p]; auto.
 rewrite scalT_0; auto.
 change (Zneg p) with ((-1) * (Zpos p))%Z.
 rewrite <-Zmult_assoc. repeat rewrite scalT_mul; auto.
@@ -278,7 +279,7 @@ Proof.
 apply natlike_ind.
 apply leT_refl.
 intros x Hx H1x.
-unfold Zsucc; rewrite injT_plus.
+unfold Z.succ; rewrite injT_plus.
 apply plusT_pos; auto.
 Qed.
 
@@ -302,7 +303,7 @@ intros x y Hx Hy.
 generalize x Hx; apply natlike_ind; auto; clear x Hx.
 rewrite scalT_0; apply leT_refl.
 intros x Hx Hp.
-unfold Zsucc; rewrite scalT_plus_l.
+unfold Z.succ; rewrite scalT_plus_l.
 apply plusT_pos; auto; rewrite scalT_1; auto.
 Qed.
 
@@ -328,6 +329,7 @@ Qed.
 End Init.
 
 (* Unusal notation *)
+Declare Scope F_scope.
 Notation "x + y" := (plusT _ x y) : F_scope.
 Notation "x - y" := (minusT _ x y) : F_scope.
 Notation "x * y" := (scalT _ x y) : F_scope.

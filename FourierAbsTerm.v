@@ -59,7 +59,7 @@ Qed.
 
 Lemma full_var0: forall l env, list_to_T FT (full_var l) env = injT _ 0.
 Proof.
-intros l; induction l as [| a l Hrec env]; simpl; auto.
+intros l; induction l as [| a l Hrec]; simpl; auto.
 intros [| b env]; auto; rewrite Hrec; rewrite scalT_0; auto.
 rewrite injT_0_l; auto.
 Qed.
@@ -258,7 +258,7 @@ Qed.
 Lemma equations_to_dt_length: forall s env i,
   In i (equations_to_dt s env) -> llength i = length env.
 Proof.
-intros s env i; induction s as [| t1 t2 s Hrec]; simpl; auto.
+intros s env i; induction s as [| t1 t2 s]; simpl; auto.
 intros HH; case HH.
 intros [HH | HH]; subst; auto.
 apply equation_to_line_length; auto.

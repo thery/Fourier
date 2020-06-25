@@ -143,7 +143,7 @@ Fixpoint app_one (v c: Z) (op: ltype) (l: list Z) (l1: dt) (r: dt)
     nil => r
   | (Line nil _  _  as a)::l2 => app_one v c op l l2 (a :: r)
   | (Line (v1::ll2) c1 op1)::l2 =>
-        let v2 := Zgcd v v1 in
+        let v2 := Z.gcd v v1 in
         let k1 := v1/v2 in
         let k2 := v/v2 in
            app_one v c op l l2 
@@ -291,7 +291,7 @@ Lemma line_to_T_opp: forall l c env,
 Proof.
 unfold line_to_T; intros l c env H1.
 rewrite list_to_T_opp.
-change (Zopp c) with (-1 * c)%Z.
+change (Z.opp c) with (-1 * c)%Z.
 unfold injT1; rewrite injT_mul; auto.
 rewrite <- scalT_plus_r; auto.
 fold injT1; rewrite <- H1.
@@ -599,28 +599,28 @@ intros l H i Hi; simpl.
 generalize (H _ Hi); destruct i as [[|x w] c]; auto.
 Qed.
  
-Lemma Zgcd_spos: forall x y, (0 < x -> 0 < y -> 0 < Zgcd x y)%Z.
+Lemma Zgcd_spos: forall x y, (0 < x -> 0 < y -> 0 < Z.gcd x y)%Z.
 Proof.
 intros x y; case x; case y; auto with zarith.
 intros p p1 H; discriminate H.
 Qed.
 
-Lemma Zgcd_div_spos_l: forall x y, (0 < x -> 0 < y -> 0 < x/Zgcd x y)%Z.
+Lemma Zgcd_div_spos_l: forall x y, (0 < x -> 0 < y -> 0 < x/Z.gcd x y)%Z.
 Proof.
 intros x y Hx Hy; destruct (Zgcd_is_gcd x y) as [[z Hz] _ _].
 pattern x at 1; rewrite Hz; rewrite Z_div_mult.
 generalize Hx (Zgcd_spos _ _ Hx Hy); pattern x at 1; rewrite Hz.
-case z; case Zgcd; intros; auto with zarith; discriminate.
-apply Zlt_gt; apply Zgcd_spos; auto with zarith.
+case z; case Z.gcd; intros; auto with zarith; discriminate.
+apply Z.lt_gt; apply Zgcd_spos; auto with zarith.
 Qed.
 
-Lemma Zgcd_div_spos_r: forall x y, (0 < x -> 0 < y -> 0 < y/Zgcd x y)%Z.
+Lemma Zgcd_div_spos_r: forall x y, (0 < x -> 0 < y -> 0 < y/ Z.gcd x y)%Z.
 Proof.
 intros x y Hx Hy; destruct (Zgcd_is_gcd x y) as [_ [z Hz] _].
 pattern y at 1; rewrite Hz; rewrite Z_div_mult.
 generalize Hy (Zgcd_spos _ _ Hx Hy); pattern y at 1; rewrite Hz.
-case z; case Zgcd; intros; auto with zarith; discriminate.
-apply Zlt_gt; apply Zgcd_spos; auto with zarith.
+case z; case Z.gcd; intros; auto with zarith; discriminate.
+apply Z.lt_gt; apply Zgcd_spos; auto with zarith.
 Qed.
 
 Lemma app_one_cor: forall v c t l l1 r env,
@@ -685,8 +685,8 @@ intros i; simpl; intros [Hi|Hi]; subst; simpl; auto.
 rewrite merge_cor.
 match goal with |- context[?X + ?Y] =>
   replace (X + Y) with 
-    ((x / Zgcd v x) * (v * e + list_to_T l env + c) +
-     (v / Zgcd v x) * (- x * e + list_to_T li env + c1))
+    ((x / Z.gcd v x) * (v * e + list_to_T l env + c) +
+     (v / Z.gcd v x) * (- x * e + list_to_T li env + c1))
 end.
 cut (line_to_T (swap_top (Line (x :: li) c1 t1)) (e::env)); auto with datatypes.
 destruct t; destruct t1; simpl; auto; unfold injT1 in H2 |- *; 
@@ -721,19 +721,19 @@ rewrite plusT_C; repeat rewrite plusT_A; auto.
 rewrite <- (injT_0_r); auto.
 apply f_equal2 with (f := plusT FT); auto.
 repeat rewrite <- scalT_mul; auto.
-replace (x / Zgcd v x * v)%Z with (v / Zgcd v x * x)%Z.
-replace (v / Zgcd v x * - x)%Z with ((-1) * (v / Zgcd v x * x))%Z; try ring.
+replace (x / Z.gcd v x * v)%Z with (v / Z.gcd v x * x)%Z.
+replace (v / Z.gcd v x * - x)%Z with ((-1) * (v / Z.gcd v x * x))%Z; try ring.
 rewrite (scalT_mul _ FA (-1)%Z); rewrite plusT_0; auto.
-assert (Hdv: ((Zgcd v x) | v)%Z).
+assert (Hdv: ((Z.gcd v x) | v)%Z).
 assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
 case Hdv; intros q Hq; pattern v at 1 4; rewrite Hq.
 rewrite Z_div_mult.
-assert (Hdx: ((Zgcd v x) | x)%Z).
+assert (Hdx: ((Z.gcd v x) | x)%Z).
 assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
 case Hdx; intros q1 Hq1; pattern x at 1 2; rewrite Hq1.
 rewrite Z_div_mult; try ring.
-apply Zlt_gt; apply Zgcd_spos; auto.
-apply Zlt_gt; apply Zgcd_spos; auto.
+apply Z.lt_gt; apply Zgcd_spos; auto.
+apply Z.lt_gt; apply Zgcd_spos; auto.
 intros i Hi; apply (H3 i); auto with datatypes.
 Qed.
 
@@ -791,8 +791,8 @@ assert (Hzx:= Zgcd_div_spos_r _ _ Hv Hxp).
 assert (Hzv:= Zgcd_div_spos_l _ _ Hv Hxp).
 match goal with |- context[?X + ?Y] =>
   replace (X + Y) with 
-    ((x / Zgcd v x) * (-v * e + list_to_T l env + c) +
-     (v / Zgcd v x) * (x * e + list_to_T li env + c1))
+    ((x / Z.gcd v x) * (-v * e + list_to_T l env + c) +
+     (v / Z.gcd v x) * (x * e + list_to_T li env + c1))
 end.
 cut (line_to_T (Line (x :: li) c1 t1) (e::env)); auto with datatypes.
 destruct t1; simpl; auto; unfold injT1 in H2 |- *; 
@@ -816,19 +816,19 @@ rewrite <- (injT_0_r); auto.
 apply f_equal2 with (f := plusT FT); auto.
 repeat rewrite <- scalT_mul; auto.
 rewrite plusT_C; auto.
-replace (v / Zgcd v x * x)%Z with (x / Zgcd v x * v)%Z.
-replace (x / Zgcd v x * - v)%Z with ((-1) * (x / Zgcd v x * v))%Z; try ring.
+replace (v / Z.gcd v x * x)%Z with (x / Z.gcd v x * v)%Z.
+replace (x / Z.gcd v x * - v)%Z with ((-1) * (x / Z.gcd v x * v))%Z; try ring.
 rewrite (scalT_mul _ FA (-1)%Z); rewrite plusT_0; auto.
-assert (Hdv: ((Zgcd v x) | x)%Z).
+assert (Hdv: ((Z.gcd v x) | x)%Z).
 assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
 case Hdv; intros q Hq; pattern x at 1 4; rewrite Hq.
 rewrite Z_div_mult; auto.
-assert (Hdx: ((Zgcd v x) | v)%Z).
+assert (Hdx: ((Z.gcd v x) | v)%Z).
 assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
 case Hdx; intros q1 Hq1; pattern v at 1 2; rewrite Hq1.
 rewrite Z_div_mult; try ring.
-apply Zlt_gt; apply Zgcd_spos; auto.
-apply Zlt_gt; apply Zgcd_spos; auto.
+apply Z.lt_gt; apply Zgcd_spos; auto.
+apply Z.lt_gt; apply Zgcd_spos; auto.
 intros i Hi; apply (H3 i); auto with datatypes.
 Qed.
 

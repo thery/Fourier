@@ -1,9 +1,9 @@
 Require Import ZArith Reals List.
-Require Import FourierConcTerm Fourier FourierAbsTerm.
+Require Export FourierConcTerm Fourier FourierAbsTerm.
 
 From mathcomp Require Import all_ssreflect all_algebra.
 
-Import GRing.Theory Num.Theory.
+Import Order.TTheory GRing.Theory Num.Theory.
 Open Scope ring_scope.
 
 Definition iZrat (z : Z) : rat :=
@@ -22,16 +22,16 @@ Proof.
   case: Pos.compare_spec => /= [->|H|H].
   - by set x := _%:R; rewrite -(subrr x).
   - rewrite Pos2Nat.inj_sub // natrB ?opprB //.
-    by apply/leP/Pos2Nat.inj_le/Pos.lt_le_incl.
+    by apply/ssrnat.leP/Pos2Nat.inj_le/Pos.lt_le_incl.
   rewrite Pos2Nat.inj_sub // natrB ?opprB //.
-  by apply/leP/Pos2Nat.inj_le/Pos.lt_le_incl.
+  by apply/ssrnat.leP/Pos2Nat.inj_le/Pos.lt_le_incl.
 - rewrite Z.pos_sub_spec.
   case: Pos.compare_spec => /= [->|H|H].
   - by set x := _%:R; rewrite -(subrr x) addrC.
   - rewrite Pos2Nat.inj_sub // natrB ?opprB 1?[_ - _]addrC //.
-    by apply/leP/Pos2Nat.inj_le/Pos.lt_le_incl.
+    by apply/ssrnat.leP/Pos2Nat.inj_le/Pos.lt_le_incl.
   rewrite Pos2Nat.inj_sub // natrB ?opprB  1?[_ - _]addrC //.
-  by apply/leP/Pos2Nat.inj_le/Pos.lt_le_incl.
+  by apply/ssrnat.leP/Pos2Nat.inj_le/Pos.lt_le_incl.
 by rewrite Pos2Nat.inj_add natrD opprD.
 Qed.
 
@@ -74,12 +74,12 @@ Theorem Qaxiom: Faxiom Qmodule.
 - by rewrite mulr1n mulNr mul1r.
 - by apply: ler_add.
 - by apply: ltr_le_add.
-- by apply: ltrW.
+- by apply: ltW.
 - case: t1 H => //= p _.
-  apply/negP; rewrite -ltrNge oppr_lt0 ltr0n.
-  by apply/ltP/Pos2Nat.is_pos.
+  apply/negP; rewrite -ltNge oppr_lt0 ltr0n.
+  by apply/ssrnat.ltP/Pos2Nat.is_pos.
 case: t1 H => [|p []|p _] //=.
-by apply/negP; rewrite -lerNgt oppr_le0 ler0n.
+by apply/negP; rewrite -leNgt oppr_le0 ler0n.
 Qed.
 
 (********************************************)
@@ -89,10 +89,10 @@ Qed.
 
 Ltac QCst t :=
  match t with
- | 0%R => constr:true
- | 1%R => constr:true
- | _%:R => constr:true
- | _ => constr:false
+ | 0%R => constr:(true)
+ | 1%R => constr:(true)
+ | _%:R => constr:(true)
+ | _ => constr:(false)
  end.
 
 Ltac QCstz t :=
@@ -109,9 +109,9 @@ Ltac QCstz t :=
 
 Ltac qIN a l :=
  match l with
- | (cons a ?l) => constr:true
+ | (cons a ?l) => constr:(true)
  | (cons _ ?l) => qIN a l
- | _ => constr:false
+ | _ => constr:(false)
  end.
 
 (********************************************)
@@ -120,7 +120,7 @@ Ltac qIN a l :=
 
 Ltac qAddFv a l :=
  match (qIN a l) with
- | true => constr:l
+ | true => constr:(l)
  | _ => constr:(cons a l)
  end.
 
@@ -131,12 +131,12 @@ Ltac qAddFv a l :=
 
 Ltac qFind_at a l :=
  match l with
- | (cons a _) => constr:O%N 
+ | (cons a _) => constr:(O%N) 
  | (cons _ ?l) => let p := qFind_at a l in 
                   let v := constr:(p.+1) in
                   let v1 := eval compute in v in
                   v1
- | _ => constr:0%N
+ | _ => constr:(0%N)
  end.
 
 (********************************************)
@@ -238,26 +238,26 @@ Ltac fqpush_concl := intros;
 Lemma fqpop1 (x y: rat) : x <> y -> x < y \/ y < x.
 Proof.
 move=> /eqP xDy; case: ltrP; first by left.
-by rewrite ler_eqVlt eq_sym (negPf xDy); right.
+by rewrite le_eqVlt eq_sym (negPf xDy); right.
 Qed.
 
 Lemma fqpop1' (x y: rat) : x != y -> x < y \/ y < x.
 Proof.
 move=> xDy; case: ltrP; first by left.
-by rewrite ler_eqVlt eq_sym (negPf xDy); right.
+by rewrite le_eqVlt eq_sym (negPf xDy); right.
 Qed.
 
 Lemma fqpop2 (x y: rat) : ~(x <= y) -> y < x.
-Proof. by move=> /negP; rewrite ltrNge. Qed.
+Proof. by move=> /negP; rewrite ltNge. Qed.
 
 Lemma fqpop3 (x y: rat) : ~(x < y) -> y <= x.
-Proof. by move=> /negP H; rewrite lerNgt. Qed.
+Proof. by move=> /negP H; rewrite leNgt. Qed.
 
 
 Ltac is_type t a :=
   let tp := type of t in
   let tp' := eval compute in tp in
-  match tp' with a => constr: true | _ => constr:false end.
+  match tp' with a => constr:(true) | _ => constr:(false) end.
 
 Ltac fqpop_hyp := match goal with
 |  H :   is_true (?X <= ?Y) |- _ => 
@@ -362,18 +362,44 @@ Lemma frE n : frC n = (locked n).+1%:R :> rat.
 Proof. by unlock. Qed.
 
 Ltac lift_rat := 
-rewrite -?natrM ?frCI ?frE ?(fr1, fr2, fr3, fr11, fr12, fr21, fr22);
+rewrite -?natrM ?frCI ?frE;
+repeat match goal with 
+| |- context [?x / ?n.+1%:R + ?y / ?m.+1%:R] =>
+   rewrite (fr1 x y n m)
+| |- context [?x / ?n.+1%:R + ?y] =>
+   rewrite (fr11 x y n)
+| |- context [?y + ?x / ?n.+1%:R] =>
+   rewrite (fr12 x y n)
+| |- context [?x / ?n.+1%:R * (?y / ?m.+1%:R)] =>
+   rewrite (fr2 x y n m)
+| |- context [?x / ?n.+1%:R * ?y] =>
+   rewrite (fr21 x y n)
+| |- context [?y * (?x / ?n.+1%:R)] =>
+   rewrite (fr22 x y n)
+| |- context [- (?x / ?n.+1%:R)] =>
+   rewrite (fr3 x n)
+end;
 unlock.
 
 Ltac rm_rat := 
-repeat (let H := fresh "H" in try (move/fr5 || move/fr6 || move/fr7); intro H);
-try (apply: fr5b || apply: fr6b || apply: fr7b). 
+repeat (
+let H := fresh "H" in
+match goal with 
+| |- _ / _ = _ / _ -> _ => try (move/fr5); intro H
+| |- is_true(_ / _ <= _ / _) -> _ => try (move/fr6); intro H
+| |- is_true(_ / _ < _ / _) -> _ =>  try (move/fr7); intro H
+| |- _ -> _ => intro H
+| |- _ / _ = _ / _  => apply: fr5b
+| |- is_true(_ / _ <= _ / _) => apply: fr6b
+| |- is_true(_ / _ < _ / _) =>  apply: fr7b
+end).
 
 Ltac qfourier :=
 fqpush_concl; repeat fqpop_hyp; rat_to_ring; lift_rat;
 rm_rat; repeat fqpop_hyp;
 match goal with |- ?X  => 
-let fv := qFV X in 
+let fv0 := qFV X in 
+let fv := eval lazy in fv0 in
 let t := qlift_term X fv in
 let v := constr:(refute (equations_to_dt Qmodule t fv)) in
 let vv := eval vm_compute in v in
