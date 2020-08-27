@@ -236,7 +236,7 @@ Definition swap_top l := match l with
 end.
 
 (* Change the top coefficient of the line *)
-Fixpoint op_line l := match l with
+Definition op_line l := match l with
   |  Line l1 c t  => Line (oppsm l1) (-c) t
 end.
 
@@ -602,7 +602,6 @@ Qed.
 Lemma Zgcd_spos: forall x y, (0 < x -> 0 < y -> 0 < Z.gcd x y)%Z.
 Proof.
 intros x y; case x; case y; auto with zarith.
-intros p p1 H; discriminate H.
 Qed.
 
 Lemma Zgcd_div_spos_l: forall x y, (0 < x -> 0 < y -> 0 < x/Z.gcd x y)%Z.
