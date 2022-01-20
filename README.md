@@ -23,11 +23,10 @@ Fourier tactic for rat
 - Additional dependencies:
   - [MathComp ssreflect 1.14 or later](https://math-comp.github.io)
   - [MathComp algebra 1.14 or later](https://math-comp.github.io)
-- Coq namespace: `fourier`
+- Coq namespace: `Fourier`
 - Related publication(s): none
 
 ## Building and installation instructions
-
 
 To build and install manually, do:
 

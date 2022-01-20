@@ -25,7 +25,7 @@ depends: [
 tags: [
   "keyword:fourier"
   "keyword:fourier tactic"
-  "logpath:fourier"
+  "logpath:Fourier"
 ]
 authors: [
   "Laurent Théry"
