@@ -313,13 +313,13 @@ Proof. by rewrite -mulNr. Qed.
 Lemma fr5 (x y : rat) (m n : nat) : 
  x / m.+1%:R  =  y / (n.+1)%:R -> n.+1%:R * x =   m.+1%:R * y.
 Proof. 
-by move=> /eqP; rewrite divq_eq ?(eqr_nat _ _ 0) // ![_ * _%:R]mulrC => /eqP.
+by move=> /eqP; rewrite eqr_div ?(eqr_nat _ _ 0) // ![_ * _%:R]mulrC => /eqP.
 Qed.
 
 Lemma fr5b (x y : rat) (m n : nat) : 
 n.+1%:R * x =   m.+1%:R * y -> x / m.+1%:R  =  y / (n.+1)%:R.
 Proof.
-move=> H; apply/eqP; rewrite divq_eq ?(eqr_nat _ _ 0) // ![_ * _%:R]mulrC.
+move=> H; apply/eqP; rewrite eqr_div ?(eqr_nat _ _ 0) // ![_ * _%:R]mulrC.
 by apply/eqP.
 Qed.
 
