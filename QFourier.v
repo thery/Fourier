@@ -72,8 +72,8 @@ Theorem Qaxiom: Faxiom Qmodule.
 - by rewrite mulr1n mulNr mul1r subrr.
 - by rewrite mulr1n mulNr mul1r.
 - by rewrite mulr1n mulNr mul1r.
-- by apply: ler_add.
-- by apply: ltr_le_add.
+- by apply: lerD.
+- by apply: ltr_leD.
 - by apply: ltW.
 - case: t1 H => //= p _.
   apply/negP; rewrite -ltNge oppr_lt0 ltr0n.
@@ -326,31 +326,31 @@ Qed.
 Lemma fr6 (x y : rat) (m n : nat) : 
  x / m.+1%:R  <=  y / (n.+1)%:R -> n.+1%:R * x <=  m.+1%:R * y.
 Proof. 
-rewrite ler_pdivr_mulr ?(ltr_nat _ 0) //.
-by rewrite mulrC mulrA ler_pdivl_mulr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
+rewrite ler_pdivrMr ?(ltr_nat _ 0) //.
+by rewrite mulrC mulrA ler_pdivlMr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
 Qed.
 
 Lemma fr6b (x y : rat) (m n : nat) : 
  n.+1%:R * x <=  m.+1%:R * y -> x / m.+1%:R  <=  y / (n.+1)%:R.
 Proof. 
 move=> H.
-rewrite ler_pdivr_mulr ?(ltr_nat _ 0) //.
-by rewrite mulrC mulrA ler_pdivl_mulr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
+rewrite ler_pdivrMr ?(ltr_nat _ 0) //.
+by rewrite mulrC mulrA ler_pdivlMr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
 Qed.
 
 Lemma fr7 (x y : rat) (m n : nat) : 
  x / m.+1%:R  <  y / (n.+1)%:R -> n.+1%:R * x <  m.+1%:R * y.
 Proof. 
-rewrite ltr_pdivr_mulr ?(ltr_nat _ 0) //.
-by rewrite mulrC mulrA ltr_pdivl_mulr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
+rewrite ltr_pdivrMr ?(ltr_nat _ 0) //.
+by rewrite mulrC mulrA ltr_pdivlMr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
 Qed.
 
 Lemma fr7b (x y : rat) (m n : nat) : 
 n.+1%:R * x <  m.+1%:R * y -> x / m.+1%:R  <  y / (n.+1)%:R.
 Proof.
 move=> H.
-rewrite ltr_pdivr_mulr ?(ltr_nat _ 0) //.
-by rewrite mulrC mulrA ltr_pdivl_mulr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
+rewrite ltr_pdivrMr ?(ltr_nat _ 0) //.
+by rewrite mulrC mulrA ltr_pdivlMr  ?[_ * _%:R]mulrC // (ltr_nat _ 0).
 Qed.
 
 Definition frC n : rat := n.+1%:R.

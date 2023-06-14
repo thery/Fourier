@@ -28,6 +28,8 @@ Fourier tactic for rat
 
 ## Building and installation instructions
 
+To build and install manually, do:
+
 ``` shell
 git clone https://github.com/thery/Fourier.git
 cd Fourier
