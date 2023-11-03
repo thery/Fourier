@@ -19,10 +19,10 @@ Fourier tactic for rat
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Coq versions: 8.15 or later
+- Compatible Coq versions: 8.18 or later
 - Additional dependencies:
-  - [MathComp ssreflect 1.14 or later](https://math-comp.github.io)
-  - [MathComp algebra 1.15 or later](https://math-comp.github.io)
+  - [MathComp ssreflect 2.1 or later](https://math-comp.github.io)
+  - [MathComp algebra 2.1 or later](https://math-comp.github.io)
 - Coq namespace: `Fourier`
 - Related publication(s): none
 
