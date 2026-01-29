@@ -1,7 +1,7 @@
-Require Import ZArith Reals List.
+From Stdlib Require Import ZArith Reals List.
 Require Export FourierConcTerm Fourier FourierAbsTerm.
 
-From mathcomp Require Import all_ssreflect all_algebra.
+From mathcomp Require Import all_boot all_order all_algebra.
 
 Import Order.TTheory GRing.Theory Num.Theory.
 Open Scope ring_scope.

@@ -1,5 +1,6 @@
 (* Examples *)
-Require Import ZArith Reals List QFourier.
+From Stdlib Require Import ZArith Reals List.
+Require Import QFourier.
 
 From mathcomp Require Import all_ssreflect all_algebra.
 

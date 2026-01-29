@@ -3,7 +3,7 @@
 (*      the Fourier-Motzkin procedure                      *)
 (***********************************************************)
 
-Require Import ZArith.
+From Stdlib Require Import ZArith.
 
 Open Scope Z_scope.
 

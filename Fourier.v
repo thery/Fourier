@@ -4,7 +4,7 @@
 (*      it to show that a system is unsolvable             *)
 (***********************************************************)
 
-Require Import ZArith Znumtheory List.
+From Stdlib Require Import ZArith Znumtheory List.
 Require Import FourierConcTerm.
 
 (***********************************************************)

@@ -17,9 +17,9 @@ Fourier tactic for rat"""
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
-  "coq" {(>= "8.20")}
-  "coq-mathcomp-ssreflect" {(>= "2.4.0")}
-  "coq-mathcomp-algebra" {(>= "2.4.0")}
+  "coq" 
+  "rocq-mathcomp-ssreflect" {(>= "2.5.0")}
+  "rocq-mathcomp-algebra" {(>= "2.5.0")}
 ]
 
 tags: [

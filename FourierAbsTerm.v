@@ -1,4 +1,5 @@
-Require Import ZArith List FourierConcTerm Fourier.
+From Stdlib Require Import ZArith List.
+Require Import FourierConcTerm Fourier.
 
 (************************************************************)
 (*          Term structure for reflecting terms             *)
