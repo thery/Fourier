@@ -604,18 +604,19 @@ Proof.
 intros x y; case x; case y; auto with zarith.
 Qed.
 
-Lemma Zgcd_div_spos_l: forall x y, (0 < x -> 0 < y -> 0 < x/Z.gcd x y)%Z.
+Lemma Zgcd_div_spos_l: forall x y, (0 < x -> 0 < y -> 0 <  x /Z.gcd x y)%Z.
 Proof.
-intros x y Hx Hy; destruct (Zgcd_is_gcd x y) as [[z Hz] _ _].
+intros x y Hx Hy; destruct (Z.gcd_divide_l x y) as [z Hz].
 pattern x at 1; rewrite Hz; rewrite Z_div_mult.
 generalize Hx (Zgcd_spos _ _ Hx Hy); pattern x at 1; rewrite Hz.
 case z; case Z.gcd; intros; auto with zarith; discriminate.
 apply Z.lt_gt; apply Zgcd_spos; auto with zarith.
 Qed.
 
-Lemma Zgcd_div_spos_r: forall x y, (0 < x -> 0 < y -> 0 < y/ Z.gcd x y)%Z.
+Lemma Zgcd_div_spos_r: forall x y, (0 < x -> 0 < y -> 0 < y / Z.gcd x y)%Z.
 Proof.
-intros x y Hx Hy; destruct (Zgcd_is_gcd x y) as [_ [z Hz] _].
+intros x y Hx Hy.
+destruct (Z.gcd_divide_r x y) as [z Hz].
 pattern y at 1; rewrite Hz; rewrite Z_div_mult.
 generalize Hy (Zgcd_spos _ _ Hx Hy); pattern y at 1; rewrite Hz.
 case z; case Z.gcd; intros; auto with zarith; discriminate.
@@ -723,12 +724,10 @@ repeat rewrite <- scalT_mul; auto.
 replace (x / Z.gcd v x * v)%Z with (v / Z.gcd v x * x)%Z.
 replace (v / Z.gcd v x * - x)%Z with ((-1) * (v / Z.gcd v x * x))%Z; try ring.
 rewrite (scalT_mul _ FA (-1)%Z); rewrite plusT_0; auto.
-assert (Hdv: ((Z.gcd v x) | v)%Z).
-assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
+assert (Hdv := Z.gcd_divide_l v x).
 case Hdv; intros q Hq; pattern v at 1 4; rewrite Hq.
 rewrite Z_div_mult.
-assert (Hdx: ((Z.gcd v x) | x)%Z).
-assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
+assert (Hdx := Z.gcd_divide_r v x).
 case Hdx; intros q1 Hq1; pattern x at 1 2; rewrite Hq1.
 rewrite Z_div_mult; try ring.
 apply Z.lt_gt; apply Zgcd_spos; auto.
@@ -818,12 +817,10 @@ rewrite plusT_C; auto.
 replace (v / Z.gcd v x * x)%Z with (x / Z.gcd v x * v)%Z.
 replace (x / Z.gcd v x * - v)%Z with ((-1) * (x / Z.gcd v x * v))%Z; try ring.
 rewrite (scalT_mul _ FA (-1)%Z); rewrite plusT_0; auto.
-assert (Hdv: ((Z.gcd v x) | x)%Z).
-assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
+assert (Hdv:= Z.gcd_divide_r v x).
 case Hdv; intros q Hq; pattern x at 1 4; rewrite Hq.
 rewrite Z_div_mult; auto.
-assert (Hdx: ((Z.gcd v x) | v)%Z).
-assert (Hz:= (Zgcd_is_gcd v x)); inversion Hz; auto.
+assert (Hdx := Z.gcd_divide_l v x).
 case Hdx; intros q1 Hq1; pattern v at 1 2; rewrite Hq1.
 rewrite Z_div_mult; try ring.
 apply Z.lt_gt; apply Zgcd_spos; auto.
